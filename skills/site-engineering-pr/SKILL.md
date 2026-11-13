@@ -6,7 +6,7 @@ description: >-
 ---
 # Site Engineering PR
 
-Use this workflow to implement approved website copy and UI specs for Vite + React personal websites via CloudAgent pull requests.
+Use this workflow to implement approved website copy and design specs into a Vite + React personal website via CloudAgent pull requests.
 
 ## Steps
 
@@ -18,7 +18,9 @@ Use this workflow to implement approved website copy and UI specs for Vite + Rea
    - Hand `CloudAgent` the problem, locked copy, design spec, constraints, and verification requirements (typecheck, Vite production build, responsive/console check, preview screenshot if applicable).
    - Keep prose and PR descriptions terse and unslopped; apply `pstack` / `poteto-mode` and `blast-radius` situationally.
 
-3. **Verify and route QA before review.**
+3. **Verify, route QA & update ledger.**
    - Confirm build/typecheck passed and inspect the PR diff/checks before reporting.
-   - Send preview screenshots or URL to `Atelier` for visual QA first; fix visual regressions in the same `CloudAgent` thread.
-   - Present the verified PR link and evidence to IVes for merge confirmation; never merge or deploy production unasked.
+   - Send preview screenshots or URL to `Atelier` via `SendToAgent` (`priority: true`) for visual QA first; fix visual regressions in the same `CloudAgent` thread.
+   - Whenever sending QA requests, spec/copy clarifications, or PR completion reports via `SendToAgent`, **ALWAYS set `priority: true`** (`priority: false` **only** for passive FYIs where no reply or action is expected).
+   - Update your own task/nested `children[]` entries in `/workspace/handoff_ledger.json` (status `pending | in_progress | waiting_review | closed | blocked`) via locked atomic read-modify-write, and mark an entry `closed` only once the receiving owner confirms receipt or deliverable completion.
+   - Present the verified PR link and evidence to IVes (or via `Chief of Staff`) for merge confirmation; never merge or deploy production unasked.

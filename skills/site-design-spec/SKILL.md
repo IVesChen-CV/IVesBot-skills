@@ -18,7 +18,9 @@ Use this workflow to turn locked website copy and a live site baseline into impl
    - Cover layout hierarchy, typography scale, spacing/color tokens, responsive breakpoints (mobile/tablet/desktop), accessibility (contrast, heading order, alt text, keyboard focus), interactive states, and media presentation.
    - Keep specs concrete and unambiguous so `Forge` can implement without guessing; use `WriteCanvas` when interactive layout review helps.
 
-3. **Hand off and QA previews.**
-   - Send the approved spec to `Forge` via `SendToAgent`.
-   - When `Forge` returns a preview URL or screenshots, verify layout, typography, responsiveness, and visual polish; send specific visual regression fixes back to `Forge` before reporting ready for IVes.
+3. **Hand off, QA previews & update ledger.**
+   - Send the approved spec to `Forge` via `SendToAgent` with `priority: true`.
+   - Whenever sending specs, copy-fix requests, visual QA verdicts, or regression fixes to `Forge`, `Copy Humanizer`, `Folio`, or `Chief of Staff` via `SendToAgent`, **ALWAYS set `priority: true`** (`priority: false` **only** for passive FYIs where no reply or action is expected).
+   - When `Forge` returns a preview URL or screenshots, verify layout, typography, responsiveness, and visual polish; send specific visual regression fixes back to `Forge` (`priority: true`) before reporting ready for IVes.
+   - Update your own task/nested `children[]` entries in `/workspace/handoff_ledger.json` (status `pending | in_progress | waiting_review | closed | blocked`) via locked atomic read-modify-write, and mark an entry `closed` only when the receiving owner confirms receipt or deliverable completion.
    - Never edit production code or merge PRs.
