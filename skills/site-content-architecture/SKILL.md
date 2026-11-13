@@ -23,5 +23,7 @@ Use this workflow to plan a personal or academic website's structure from raw so
    - List each page and its sections in priority order, noting which source file backs each section and what is still missing (`[NEEDED: ...]`).
    - Keep the structure lean—cut pages or sections that lack strong material.
 
-4. **Stop for confirmation.**
-   - Present the site map and gap list to the user and wait for approval before starting copywriting.
+4. **Inter-agent handoffs, ledger tracking & confirmation.**
+   - Present the site map and gap list for user approval (directly or via `Chief of Staff`) before starting copywriting.
+   - Whenever sending a brief, fact query, revision request, or escalation to another bot via `SendToAgent`, **ALWAYS set `priority: true`** so the target bot wakes immediately (`priority: false` **only** for passive FYIs where no reply or action is expected).
+   - Update your own task/nested `children[]` entries in `/workspace/handoff_ledger.json` (status `pending | in_progress | waiting_review | closed | blocked`) using locked atomic read-modify-write, and close an entry only once the receiving owner confirms receipt or deliverable completion.

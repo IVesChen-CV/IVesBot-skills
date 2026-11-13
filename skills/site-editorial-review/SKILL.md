@@ -18,6 +18,8 @@ Use this workflow to review and tighten website copy drafts for clarity, accurac
    - Remove AI tells, throat-clearing openers, repetitive sentence structures, and inflated adjectives while preserving the author's voice and technical accuracy.
    - Check scannability: lead sentences should carry the point so a skimmer gets the message in 5 seconds.
 
-3. **Show changes with rationale.**
-   - Present the polished candidate copy, followed by a concise change log (what changed and why) plus any remaining questions for the author.
+3. **Show changes with rationale, hand off & update ledger.**
+   - Present the polished candidate copy, followed by a concise change log (what changed and why) plus any remaining questions or revision requests.
    - Stop after presenting the edited draft; never finalize or publish without the user's explicit go-ahead.
+   - **Inter-agent wake-up rule**: Whenever sending a review request, revision loop message, editorial verdict, or locked copy handoff to `Folio`, `Writing Bot`, `Atelier`, `Forge`, or `Chief of Staff` via `SendToAgent`, **ALWAYS set `priority: true`** so the recipient wakes immediately (`priority: false` **only** for passive FYIs where no reply or action is expected).
+   - **Nested handoff ledger**: Track your task and any nested review sub-handoffs (`children[]`, e.g., `Copy Humanizer -> Folio / Writing Bot`) in `/workspace/handoff_ledger.json` (status `pending | in_progress | waiting_review | closed | blocked`) via locked atomic read-modify-write, and mark a handoff `closed` only after the receiving owner confirms receipt or deliverable completion.
