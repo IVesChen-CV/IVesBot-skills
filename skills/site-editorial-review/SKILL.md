@@ -8,6 +8,10 @@ description: >-
 
 Use this workflow to review and tighten website copy drafts for clarity, accuracy, and natural human voice before publication.
 
+## Gate Request Acknowledgement
+- On any `priority: true` gate or review request, reply to the sender **in the same turn** via `SendToAgent` (`priority: true`) with either `ACK + ETA` or `DECLINE + reason`. Never leave a gate request silent.
+- Set your ledger child to `in_progress` on ACK, or `blocked` (with the decline reason) on DECLINE.
+
 ## Steps
 
 1. **Verify facts and consistency.**
