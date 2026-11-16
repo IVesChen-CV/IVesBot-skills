@@ -31,14 +31,23 @@ description: >-
 ## Inter-Agent Wake-Up & Nested Ledger Rules
 - **Wake-up rule (`SendToAgent`)**: Whenever sending a task handoff, review request, revision loop message, audit ticket, verdict, or status report that another bot must act on or is waiting on, **ALWAYS set `priority: true`** on `SendToAgent`. Use `priority: false` **only** for passive FYIs where no reply or action is expected.
 - **Nested handoff ledger (`/workspace/handoff_ledger.json`)**:
-  - Track every delegated task and nested sub-handoff in `/workspace/handoff_ledger.json` with fields: `id`, `title`, `owner`, `assignee`, `status` (`pending | in_progress | waiting_review | closed | blocked`), `created_at`, `updated_at`, `artifact`, and `children[]` (for nested delegations, e.g., `Chief of Staff -> Copy Humanizer -> Folio / Writing Bot`).
+  - Track every delegated task and nested sub-handoff in `/workspace/handoff_ledger.json` with fields: `id`, `title`, `owner`, `assignee`, `status` (`pending | in_progress | waiting_review | closed | blocked`), `created_at`, `updated_at`, `artifact`, `children[]` (for nested delegations, e.g., `Chief of Staff -> Copy Humanizer -> Folio / Writing Bot`), and optional `gate_waived_by` (who explicitly waived a review gate, e.g. `IVes`).
   - Update only your own task/child entries via a locked atomic read-modify-write (e.g., `flock` + temp-file replace) so concurrent bots never overwrite sibling tasks.
   - Set `waiting_review` when submitting a deliverable; mark an item `closed` **only** after the receiving owner confirms receipt or deliverable completion.
+
+## Silent Reviewer Fallback
+If a gate reviewer leaves 2 consecutive `priority: true` wakes unanswered (no ACK, DECLINE, or deliverable):
+1. **Never do the gate yourself.** Chief of Staff must not edit copy, specs, or code in place of the silent reviewer.
+2. Mark that child `blocked` with notes `reason: reviewer_unresponsive` and the timestamps of both wakes.
+3. Then do one of:
+   - **Re-route** the review to another in-team bot (editorial: `Copy Humanizer` <-> `Writing Bot` <-> `Folio`; design: back to `Atelier` only), logged as a new child entry; or
+   - **Ask IVes** in Traditional Chinese whether to explicitly waive the gate. Only on IVes's own words, set `gate_waived_by: "IVes"` and record the waiver (quote + time) in that child's notes before closing it.
+4. Never close a skipped gate as "superseded" without one of the above recorded in the ledger.
 
 ## Steps
 1. Prepare a tight handoff brief with five fields: `Goal`, `Verified inputs/paths`, `Constraints`, `Deliverable`, and `Review gate`.
 2. Record the task (or nested `children[]` entry) in `/workspace/handoff_ledger.json` as `pending` / `in_progress`, then dispatch via `SendToAgent` with `priority: true` (`priority: false` strictly for passive FYIs).
-3. Track open handoffs and nested `children[]` in `/workspace/handoff_ledger.json` across turns, follow up on stalled stages, and report consolidated status + blockers to IVes.
+3. Track open handoffs and nested `children[]` in `/workspace/handoff_ledger.json` across turns, follow up on stalled stages (applying the Silent Reviewer Fallback after 2 unanswered wakes), and report consolidated status + blockers to IVes.
 4. When a teammate replies, verify claims against real sources before updating `/workspace/handoff_ledger.json` to `closed` or presenting to IVes.
 
 ## Stop & Safety Rules

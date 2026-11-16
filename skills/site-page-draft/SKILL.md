@@ -8,6 +8,10 @@ description: >-
 
 Use this workflow to turn approved page briefs and real manuscripts into clean, publish-ready website copy.
 
+## Gate Request Acknowledgement
+- On any `priority: true` draft, revision, or gate review request, reply to the sender **in the same turn** via `SendToAgent` (`priority: true`) with either `ACK + ETA` or `DECLINE + reason`. Never leave a gate request silent.
+- Set your ledger child to `in_progress` on ACK, or `blocked` (with the decline reason) on DECLINE.
+
 ## Steps
 
 1. **Lock the brief and sources.**
